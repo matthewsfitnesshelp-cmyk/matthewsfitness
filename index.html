@@ -4,145 +4,788 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matthews Fitness — Smart Calorie & Macro Tracker</title>
-    <meta name="description" content="AI-powered fitness tracking. Smart calorie counting, macro tracking, restaurant menu scanning, and personalized coaching.">
+    <meta name="description" content="Free calorie tracking with barcode scanning. Upgrade for AI-powered restaurant menu scanning, meal building, recipe generation, and a 24/7 AI coach. Available on Google Play.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #193c50;
-            --surface: rgba(255, 255, 255, 0.06);
-            --blue: #448AFF;
-            --text: #E8EFF5;
-            --text-muted: rgba(232, 239, 245, 0.5);
-            --border: rgba(255, 255, 255, 0.08);
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #1b3b50;
+            --bg-dark: #142d3e;
+            --bg-darker: #0f2230;
+            --accent-blue: #4A90D9;
+            --accent-light: #5BA3F5;
+            --accent-green: #34C759;
+            --text-white: #FFFFFF;
+            --text-light: #c8dce8;
+            --text-muted: #8aafc5;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            padding: 60px 24px;
+            background: linear-gradient(170deg, var(--bg-darker) 0%, var(--bg-primary) 40%, #1e4460 100%);
+            overflow: hidden;
         }
-        body::before {
+
+        .hero::before {
             content: '';
-            position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(ellipse at 30% 10%, rgba(68, 138, 255, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 90%, rgba(232, 115, 42, 0.04) 0%, transparent 50%);
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(74, 144, 217, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
             pointer-events: none;
         }
-        .container {
+
+        .hero-content {
             position: relative;
-            z-index: 1;
-            max-width: 500px;
-            padding: 48px 28px;
+            z-index: 2;
+            max-width: 720px;
+        }
+
+        .hero-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+            color: var(--text-light);
+            max-width: 560px;
+            margin: 0 auto 36px;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--accent-green);
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 16px 36px;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(52, 199, 89, 0.35);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(52, 199, 89, 0.45);
+        }
+
+        .hero-cta svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ===== SECTION SHARED ===== */
+        section {
+            padding: 80px 24px;
+        }
+
+        .section-container {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* ===== VALUE PROP BANNER ===== */
+        .value-banner {
+            background: linear-gradient(135deg, var(--bg-darker), var(--bg-dark));
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
             text-align: center;
         }
-        .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 24px;
-            margin: 0 auto 28px;
-            display: block;
+
+        .value-item {
+            padding: 20px;
         }
-        h1 {
-            font-size: 34px;
+
+        .value-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .value-item h3 {
+            font-size: 1.15rem;
             font-weight: 700;
-            letter-spacing: -0.3px;
-            margin-bottom: 14px;
-            color: var(--text);
+            margin-bottom: 8px;
         }
-        .tagline {
-            font-size: 16px;
+
+        .value-item p {
+            font-size: 0.92rem;
             color: var(--text-muted);
-            line-height: 1.65;
-            margin-bottom: 32px;
-            max-width: 380px;
+            line-height: 1.6;
+        }
+
+        /* ===== FEATURE ROWS ===== */
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .feature-row.reversed {
+            direction: rtl;
+        }
+
+        .feature-row.reversed > * {
+            direction: ltr;
+        }
+
+        .feature-text {
+            max-width: 480px;
+        }
+
+        .feature-text .section-desc {
+            margin-bottom: 24px;
+        }
+
+        .feature-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52, 199, 89, 0.12);
+            border: 1px solid rgba(52, 199, 89, 0.25);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .feature-image-wrap {
+            display: flex;
+            justify-content: center;
+        }
+
+        .feature-image-wrap img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== COMPARISON ===== */
+        .comparison {
+            background: linear-gradient(170deg, var(--bg-darker), var(--bg-dark));
+        }
+
+        .comparison-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .comparison-header .section-desc {
+            margin: 0 auto;
+        }
+
+        .comparison-table {
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+        }
+
+        .comp-row {
+            display: grid;
+            grid-template-columns: 1fr 120px 120px;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.95rem;
+        }
+
+        .comp-row:last-child {
+            border-bottom: none;
+        }
+
+        .comp-row.header {
+            background: rgba(74, 144, 217, 0.1);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+
+        .comp-row .feature-name {
+            font-weight: 500;
+        }
+
+        .comp-cell {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .comp-free {
+            color: var(--accent-green);
+        }
+
+        .comp-paid {
+            color: var(--accent-blue);
+        }
+
+        .comp-other {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== SCREENSHOT GALLERY ===== */
+        .gallery {
+            overflow: hidden;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .gallery-header .section-desc {
+            margin: 0 auto;
+        }
+
+        .gallery-scroll {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 0 24px 24px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .gallery-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 auto;
+            width: 260px;
+            scroll-snap-align: center;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item img:hover {
+            transform: scale(1.03);
+        }
+
+        .gallery-item p {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* ===== FINAL CTA ===== */
+        .final-cta {
+            text-align: center;
+            padding: 100px 24px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-darker) 100%);
+            position: relative;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(52, 199, 89, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(2rem, 4.5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .final-cta p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 36px;
+            max-width: 500px;
             margin-left: auto;
             margin-right: auto;
         }
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 36px;
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--bg-darker);
+            border-top: 1px solid var(--card-border);
+            padding: 40px 24px;
+            text-align: center;
         }
-        .chip {
-            padding: 7px 14px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(232, 239, 245, 0.65);
-            white-space: nowrap;
-        }
-        .play-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 13px 26px;
-            background: var(--blue);
-            border-radius: 12px;
-            color: #fff;
-            font-weight: 600;
-            font-size: 15px;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-        .play-badge:hover { opacity: 0.9; }
-        .play-badge svg { width: 18px; height: 18px; fill: #fff; }
-        .links {
-            margin-top: 36px;
+
+        .footer-links {
             display: flex;
             justify-content: center;
             gap: 24px;
+            margin-bottom: 16px;
         }
-        .links a {
-            font-size: 13px;
+
+        .footer-links a {
             color: var(--text-muted);
             text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
             transition: color 0.2s;
         }
-        .links a:hover { color: var(--blue); }
-        .copy {
-            margin-top: 40px;
-            font-size: 12px;
-            color: rgba(232, 239, 245, 0.2);
+
+        .footer-links a:hover {
+            color: var(--text-white);
+        }
+
+        .footer-copy {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            section {
+                padding: 60px 20px;
+            }
+
+            .value-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .feature-row,
+            .feature-row.reversed {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                direction: ltr;
+                text-align: center;
+            }
+
+            .feature-text {
+                max-width: 100%;
+            }
+
+            .feature-text .section-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .feature-image-wrap img {
+                max-width: 240px;
+            }
+
+            .comp-row {
+                grid-template-columns: 1fr 80px 80px;
+                padding: 14px 16px;
+                font-size: 0.85rem;
+            }
+
+            .gallery-item {
+                width: 220px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Matthews Fitness" class="logo">
-        <h1>Matthews Fitness</h1>
-        <p class="tagline">AI-powered calorie and macro tracking with restaurant menu scanning, personalized coaching, and smart workout planning.</p>
 
-        <div class="features">
-            <div class="chip">Calorie & Macro Tracking</div>
-            <div class="chip">Menu & Food Scanning</div>
-            <div class="chip">AI Coach</div>
-            <div class="chip">Workout Planner</div>
-            <div class="chip">Recipe Generator</div>
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="logo.png" alt="Matthews Fitness" class="hero-logo">
+            <h1>Track smarter.<br><span>Not harder.</span></h1>
+            <p class="hero-subtitle">
+                The calorie & macro tracker that gives you real tools for free — and AI-powered features that are actually worth upgrading for.
+            </p>
+            <a href="https://play.google.com/store/apps/details?id=com.jake.matthewsfitness" class="hero-cta">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302a1 1 0 0 1 0 1.38l-2.302 2.302L15.396 12l2.302-2.492zM5.864 2.658L16.8 9.091l-2.302 2.302L5.864 2.658z"/></svg>
+                Download Free on Google Play
+            </a>
+            <span class="hero-badge">Android · Free to use · No credit card required</span>
         </div>
+    </section>
 
-        <a href="https://play.google.com/store/apps/details?id=com.jake.matthewsfitness" class="play-badge">
-            <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734c0-.382.218-.72.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302-2.302 2.302-2.698-2.302 2.698-2.302zM5.864 2.658L16.8 8.99l-2.302 2.302L5.864 2.658z"/></svg>
-            Get on Google Play
-        </a>
+    <!-- ===== VALUE PROPS ===== -->
+    <section class="value-banner">
+        <div class="section-container">
+            <div class="value-grid">
+                <div class="value-item fade-up">
+                    <div class="value-icon">📊</div>
+                    <h3>Free Barcode Scanning</h3>
+                    <p>Scan any product and log it instantly. No paywall, no trial — just works.</p>
+                </div>
+                <div class="value-item fade-up">
+                    <div class="value-icon">🤖</div>
+                    <h3>AI That's Worth It</h3>
+                    <p>Restaurant menu scanning, meal building, recipe generation — premium features that actually earn their price.</p>
+                </div>
+                <div class="value-item fade-up">
+                    <div class="value-icon">💪</div>
+                    <h3>All-in-One Tracker</h3>
+                    <p>Nutrition, workouts, weight, water, and coaching in a single app. No juggling five different apps.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <div class="links">
+    <!-- ===== FEATURE 1: Free Logging ===== -->
+    <section>
+        <div class="section-container">
+            <div class="feature-row fade-up">
+                <div class="feature-text">
+                    <p class="section-label">Free Features</p>
+                    <h2 class="section-title">Log food in seconds — for free</h2>
+                    <p class="section-desc">
+                        Barcode scanning, manual entry, and full macro tracking are completely free. Unlike other apps that lock basic features behind a subscription, Matthews Fitness gives you everything you need to start tracking right away.
+                    </p>
+                    <div class="feature-highlight">✓ Free barcode scanning — no paywall</div>
+                </div>
+                <div class="feature-image-wrap">
+                    <img src="screenshot2.png" alt="Log Food in Seconds — free barcode scanning and food logging">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE 2: Restaurant Menu Scanning ===== -->
+    <section style="background: var(--bg-dark);">
+        <div class="section-container">
+            <div class="feature-row reversed fade-up">
+                <div class="feature-text">
+                    <p class="section-label">AI-Powered</p>
+                    <h2 class="section-title">Eat out and stay on track</h2>
+                    <p class="section-desc">
+                        Search any restaurant and get instant AI-powered recommendations sorted by lowest calorie, highest protein, or best balanced. You can even scan a physical menu at local spots and get full nutrition breakdowns on the spot.
+                    </p>
+                    <div class="feature-highlight">✨ AI recommends meals that fit your goals</div>
+                </div>
+                <div class="feature-image-wrap">
+                    <img src="screenshot8.png" alt="Eat Out Stay On Track — AI restaurant menu scanning">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE 3: Build Your Meal ===== -->
+    <section>
+        <div class="section-container">
+            <div class="feature-row fade-up">
+                <div class="feature-text">
+                    <p class="section-label">Meal Builder</p>
+                    <h2 class="section-title">Build your perfect meal</h2>
+                    <p class="section-desc">
+                        Customize any restaurant order down to the bread, toppings, and sauce — and see exactly how each choice changes your macros in real time. No more guessing what you're eating when you go out.
+                    </p>
+                    <div class="feature-highlight">🎯 Real-time macro updates as you customize</div>
+                </div>
+                <div class="feature-image-wrap">
+                    <img src="screenshot3.png" alt="Build Your Perfect Meal — customize restaurant orders with real-time macros">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE 4: AI Coach ===== -->
+    <section style="background: var(--bg-dark);">
+        <div class="section-container">
+            <div class="feature-row reversed fade-up">
+                <div class="feature-text">
+                    <p class="section-label">AI Coach</p>
+                    <h2 class="section-title">Your 24/7 AI Coach</h2>
+                    <p class="section-desc">
+                        Coach Matthews knows your goals, your progress, and your day. Ask what to eat for dinner, whether you can afford a snack, or how to hit your protein goal — and get answers based on your actual data, not generic advice.
+                    </p>
+                    <div class="feature-highlight">💬 Personalized to your real-time progress</div>
+                </div>
+                <div class="feature-image-wrap">
+                    <img src="screenshot7.png" alt="Your 24/7 AI Coach — personalized fitness coaching">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURE 5: Recipes ===== -->
+    <section>
+        <div class="section-container">
+            <div class="feature-row fade-up">
+                <div class="feature-text">
+                    <p class="section-label">AI Kitchen</p>
+                    <h2 class="section-title">AI-powered recipe generation</h2>
+                    <p class="section-desc">
+                        Tell the AI what you're craving, what macros you need to hit, or what ingredients you have — and it generates full recipes with accurate nutrition breakdowns that you can log with one tap.
+                    </p>
+                    <div class="feature-highlight">🍳 Turn any recipe into trackable macros</div>
+                </div>
+                <div class="feature-image-wrap">
+                    <img src="screenshot5.png" alt="AI Powered Kitchen — recipe generation with macro tracking">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COMPARISON ===== -->
+    <section class="comparison">
+        <div class="section-container">
+            <div class="comparison-header">
+                <p class="section-label">Why Matthews Fitness</p>
+                <h2 class="section-title">Free basics. Premium AI.</h2>
+                <p class="section-desc">
+                    Other apps charge you for features that should be free. We don't. When you upgrade, you get AI tools you can't find anywhere else.
+                </p>
+            </div>
+            <div class="comparison-table fade-up">
+                <div class="comp-row header">
+                    <span>Feature</span>
+                    <span class="comp-cell">Free</span>
+                    <span class="comp-cell">Premium</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">Barcode Scanning</span>
+                    <span class="comp-cell comp-free">✓</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">Calorie & Macro Tracking</span>
+                    <span class="comp-cell comp-free">✓</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">Weight & Water Logging</span>
+                    <span class="comp-cell comp-free">✓</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">Workout Tracking</span>
+                    <span class="comp-cell comp-free">✓</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">Restaurant Menu Search</span>
+                    <span class="comp-cell comp-other">—</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">AI Menu Scanning</span>
+                    <span class="comp-cell comp-other">—</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">AI Meal Builder</span>
+                    <span class="comp-cell comp-other">—</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">AI Recipe Generator</span>
+                    <span class="comp-cell comp-other">—</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+                <div class="comp-row">
+                    <span class="feature-name">24/7 AI Coach</span>
+                    <span class="comp-cell comp-other">—</span>
+                    <span class="comp-cell comp-paid">✓</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== GALLERY ===== -->
+    <section class="gallery">
+        <div class="section-container">
+            <div class="gallery-header">
+                <p class="section-label">See It In Action</p>
+                <h2 class="section-title">Built for real life</h2>
+                <p class="section-desc">Swipe through to see how Matthews Fitness helps you stay on track — at home, at the gym, or eating out.</p>
+            </div>
+        </div>
+        <div class="gallery-scroll">
+            <div class="gallery-item">
+                <img src="screenshot1.png" alt="See Your Success">
+                <p>See Your Success</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot2.png" alt="Log Food in Seconds">
+                <p>Log Food in Seconds</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot3.png" alt="Build Your Perfect Meal">
+                <p>Build Your Perfect Meal</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot4.png" alt="Analyze Your Performance">
+                <p>Analyze Performance</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot5.png" alt="AI Powered Kitchen">
+                <p>AI-Powered Kitchen</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot6.png" alt="Track Every Rep">
+                <p>Track Every Rep</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot7.png" alt="Your 24/7 AI Coach">
+                <p>Your 24/7 AI Coach</p>
+            </div>
+            <div class="gallery-item">
+                <img src="screenshot8.png" alt="Eat Out Stay On Track">
+                <p>Eat Out, Stay On Track</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA ===== -->
+    <section class="final-cta">
+        <div class="final-cta-content">
+            <h2>Start tracking for free</h2>
+            <p>No credit card. No locked features. Just download and go. Upgrade when you're ready for AI-powered tools that make tracking effortless.</p>
+            <a href="https://play.google.com/store/apps/details?id=com.jake.matthewsfitness" class="hero-cta">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302a1 1 0 0 1 0 1.38l-2.302 2.302L15.396 12l2.302-2.492zM5.864 2.658L16.8 9.091l-2.302 2.302L5.864 2.658z"/></svg>
+                Download Free on Google Play
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-links">
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms of Service</a>
         </div>
+        <p class="footer-copy">© 2025 Matthews Fitness. All rights reserved.</p>
+    </footer>
 
-        <p class="copy">&copy; 2025 Matthews Fitness. All rights reserved.</p>
-    </div>
+    <!-- ===== SCROLL ANIMATIONS ===== -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
+
 </body>
 </html>
